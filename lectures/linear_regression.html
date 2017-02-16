@@ -80,10 +80,10 @@
 								<li>this is a NECESSARY switch (more on why later)</li>
 								<li>$X = \begin{bmatrix} 1 & x_1 & ... & x_n\end{bmatrix}$</li>
 							</ul>
-							<li>Let $W = \begin{bmatrix} b \\ m \end{bmatrix} = \begin{bmatrix} w_0 \\ w_1 \end{bmatrix}$</li>
+							<li>Let $w = \begin{bmatrix} b \\ m \end{bmatrix} = \begin{bmatrix} w_0 \\ w_1 \end{bmatrix}$</li>
 							<li>Let $Y = y$; capital since it is "technically" a matrix</li>
-							<li>$Y = XW$: the equation of a basic line</li>
-							<li>$Y \in \mathbb{R}^{n \times 1}, X \in \mathbb{R}^{n \times d + 1}, W \in \mathbb{R}^{d+1 \times 1}$</li>
+							<li>$Y = Xw$: the equation of a basic line</li>
+							<li>$Y \in \mathbb{R}^{n \times 1}, X \in \mathbb{R}^{n \times d + 1}, w \in \mathbb{R}^{d+1 \times 1}$</li>
 						</ul>
 					</section>
 				</section>
@@ -94,7 +94,7 @@
 						<ul>
 							<li>given a real valued input with some number of features, provide the "most-likely" real valued output</li>
 							<li>Given: $\left\{(x_i, y_i)\right\}_{i=1}^n$, $x_i \in \mathbb{R}^d, y_i \in \mathbb{R}^d$ </li>
-							<li>Model: $Y = XW + ?$</li>
+							<li>Model: $Y = Xw + ?$</li>
 							<li>Can we find the weights for our model that minimize some sort of "loss" incurred on bad predictions?</li>
 						</ul>
 					</section>
@@ -111,7 +111,7 @@
 					<section>
 						<h2>The Model</h2>
 
-						$Y = XW + \epsilon$
+						$Y = Xw + \epsilon$
 
 						\[\begin{align*}
 						\begin{bmatrix}
