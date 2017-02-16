@@ -328,6 +328,7 @@
 							<li>What does $x_iw$ look like over all $i$?</li>
 							<li>Easy: This is just column vector $Xw$, a vector where the $i^{th}$ element is $x_iw$</li>
 						</ul>
+						$x_k^TY = \sum_{i=1}^n \left(x_{ik}(Xw)_i\right)$
 					</section>
 
 					<section>
@@ -342,10 +343,10 @@
 						\end{bmatrix}
 						\end{align*}\]
 						<ul>
-							<li>What is $i$ doing on $x_i$?</li>
-							<li>Going DOWN the $i^{th}$ training example</li>
 							<li>What is $i$ doing on $x_{ik}$? Going DOWN the training examples $x_k$ for the $k^{th}$ feature</li>
 							<li>Another inner product: just $\langle x_k, Xw\rangle = x_k^TXw$</li>
+							<li>What is $i$ doing on $(Xw)_i$, the $i^{th}$ element of vector $Xw$?</li>
+							<li>Going DOWN the $i^{th}$ training example</li>
 						</ul>
 					</section>
 
