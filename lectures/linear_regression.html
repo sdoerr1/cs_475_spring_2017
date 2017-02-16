@@ -408,11 +408,11 @@
 						\[\begin{align*}
 							LS &= Y^TY - w^TX^TY - Y^TXw + w^TX^TXw  \\
 							&= Y^TY - 2Y^TXw + w^TX^TXw \\
-							\frac{\delta LS}{\delta w} &= -2Y^TX + 2X^TXw = 0 \\
-							Y^TX &= X^TXw
+							\frac{\delta LS}{\delta w} &= -2(Y^TX)^T + 2X^TXw = 0 \\
+							X^TY &= X^TXw
 						\end{align*}\]
 						<ul>
-							<li>note: $\frac{\delta [Xw]}{\delta w} = X$</li>
+							<li>note: $\frac{\delta [Xw]}{\delta w} = X^T$</li>
 							<li>$\frac{\delta [w^TX^TXw]}{\delta w} = 2X^TXw$</li>
 						</ul>
 					</section>
@@ -425,7 +425,7 @@
 							\hat{w} &= (X^TX)^{-1}X^TY
 						\end{align*}\]
 						<ul>
-							<li>Transpose of a dot product is the same dot product</li>
+							<li>Note: Same solution as before; far fewer steps!</li>
 						</ul>
 					</section>
 				</section>
