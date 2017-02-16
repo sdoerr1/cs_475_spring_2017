@@ -138,13 +138,13 @@
 
 				<section>
 					<section>
-						<h1>OLS Loss Function</h1>
+						<h1>LS Loss Function</h1>
 					</section>
 					<section>
-						<h2>OLS: Ordinary Least Squares</h2>
+						<h2>LS: Least Squares</h2>
 						<ul>
 							<li>Goes by many names: Ordinary Least Squares, Sum of Squared Residuals, Sum of Squared Error, etc.</li>
-							<li>You pick; I personally like Sum of Squared Residuals (SSR)</li>
+							<li>You pick; I personally like Sum of Squared Residuals (SSR); many people prefer Least Squares (course preferred)</li>
 							<li>Disclaimer: the first time I saw this, I just zoned out because it didn't make any sense :(</li>
 							<li>Try and bear with me, and let me know if something is unclear</li>
 						</ul>
@@ -163,8 +163,8 @@
 					<section>
 						<h2>Defining our Loss</h2>
 						<ul>
-							<li>If we have $Y = XW + \epsilon$, then $\epsilon = Y - XW$</li>
-							<li>Loss function: $L(W | X, Y) = \textrm{argmin}_{W}f(\epsilon)$</li>
+							<li>If we have $Y = Xw + \epsilon$, then $\epsilon = Y - Xw$</li>
+							<li>Loss function: $L(w | X, Y) = \textrm{argmin}_{w}f(\epsilon)$</li>
 							<li>What function $f(\epsilon)$ should we pick to minimize the error?</li>
 							<li>Remember our discussion on norms...</li>
 						</ul>
@@ -173,9 +173,9 @@
 					<section>
 						<h2>Finally, a Loss function!</h2>
 						<ul>
-							<li>let $f(\epsilon) = ||\epsilon||_2^2 = ||Y - XW||_2^2$</li>
-							<li>Our model becomes: $L(W | X, Y) = \textrm{argmin}_{W}||Y - XW||_2^2$</li>
-							<li>Pick the weights $W$ that minimize our error, or the difference between our observations $Y$ and our predictions $\hat{Y} = XW$</li>
+							<li>let $f(\epsilon) = ||\epsilon||_2^2 = ||Y - Xw||_2^2$</li>
+							<li>Our model becomes: $L(w | X, Y) = \textrm{argmin}_{w}||Y - Xw||_2^2$</li>
+							<li>Pick the weights $w$ that minimize our error, or the difference between our observations $Y$ and our predictions $\hat{Y} = XW$</li>
 							<li>How can we figure this out?</li>
 						</ul>
 					</section>
@@ -217,42 +217,154 @@
 							\sum_{i=1}^n x_{ik}y_i &= \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right)
 						\end{align*}\]
 					</section>
+
 					<section>
 						<h2>Next step is tough</h2>
 						<ul>
 							<li>If you look closely though, the entire thing is wrought with our lin alg "cheats"</li>
-							<li>Remember: $\langle x, y\rangle = x^Ty = \sum_{i=1}^n x_i y_i$</li>
 							<li>Goal: Put it back into a matrix</li>
+							<li>Think about the geometry and how the matrices line up</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Left Half</h2>
+						$\sum_{i=1}^n x_{ik}y_i = \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right)$
+						<ul>
+							<li>First, let's look just at the left half, $\sum_{i=1}^n x_{ik}y_i$</li>
+							<li>Think about the matrix interpretation of this operation: what is $i$?</li>
+							<li>How is $i$ interpretted geometrically on $X$? $Y$?</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Lin Alg Refresher</h2>
+						Given $x,y \in \mathbb{R}^n = \mathbb{R}^{n \times 1}$ two column vectors, $z \in \mathbb{R}^{1 \times n}$ a row vector
+						<br>
+						<ul>
+							<li>Inner product:$\langle x, y\rangle = x^Ty \in \mathbb{R}^{1 \times 1}$</li>
+							<li>Dot product: $xz \in \mathbb{R}^{1 \times 1}$</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Left Half</h2>
+						$\sum_{i=1}^n x_{ik}y_i = \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right)$
+						\[\begin{align*}
+							X &= \begin{bmatrix}
+						1 & x_{11} & x_{12} & ... & x_{1d} \\
+						\vdots & \vdots & \vdots & \ddots & \vdots \\
+						1 & x_{n1} & x_{n2} & ... & x_{nd} \\
+						\end{bmatrix}, Y = \begin{bmatrix}
+						y_1 \\ \vdots \\ y_n
+						\end{bmatrix}
+						\end{align*}\]
+						<ul>
+							<li>notice that $i=1...n$ goes DOWN the training examples $x_k$ for the $k^{th}$ feature</li>
+							<li>notice that $i=1...n$ goes DOWN the column of $Y$</li>
+							<li>Since $x_k, Y$ are both vectors, this is just an inner product!</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Simplified Left Half</h2>
+						$\sum_{i=1}^n x_{ik}y_i$
+						\[\begin{align*}
+						x_k &= \begin{bmatrix}
+						x_{1k}\\ \vdots \\ x_{nk}
+						\end{bmatrix}, Y = \begin{bmatrix}
+						y_1 \\ \vdots \\ y_n
+						\end{bmatrix}
+						\end{align*}\]
+						<ul>
+							<li>Geometrically, our sum is just $x_{1k}y_1 + ... + x_{nk}y_n$</li>
+							<li>So, this is equivalent to $\langle x_k, Y\rangle = x_k^TY$</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Right Half part 1</h2>
+						$x_k^TY = \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right)$
+						\[\begin{align*}
+						X &= \begin{bmatrix}
+						1 & x_{11} & x_{12} & ... & x_{1d} \\
+						\vdots & \vdots & \vdots & \ddots & \vdots \\
+						1 & x_{n1} & x_{n2} & ... & x_{nd} \\
+						\end{bmatrix}, w = \begin{bmatrix}
+						w_0 \\ \vdots \\ w_d
+						\end{bmatrix}
+						\end{align*}\]
+						<ul>
+							<li>What is $j$ doing here on $x_i$?</li>
+							<li>Going ACROSS the features of $i^{th}$ training example</li>
+							<li>$x_i = \begin{bmatrix}1 & x_{i1} & x_{i2} & ... x_{id}\end{bmatrix}$</li>
+							<li>Going DOWN the feature coefficients of $w$</li>
+							<li>This is just a simple dot product: $x_i w$</li>
 						</ul>
 					</section>
 					<section>
-						<ul>
-							<li>Drop the sums over $i$ with inner products that "operate" over $i$</li>
-						</ul>
+						<h2>Right Half part 2</h2>
+						$x_k^TY = \sum_{i=1}^n \left(x_{ik}x_iw\right)$
 						\[\begin{align*}
-							\sum_{i=1}^n x_{ik}y_i &= \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right) \\
-							\langle x_k, Y\rangle &= \langle x_k, \sum_{j=0}^d x_{ij}w_j\rangle = \langle x_k, XW \rangle \\
+						X &= \begin{bmatrix}
+						1 & x_{11} & x_{12} & ... & x_{1d} \\
+						\vdots & \vdots & \vdots & \ddots & \vdots \\
+						1 & x_{n1} & x_{n2} & ... & x_{nd} \\
+						\end{bmatrix}, w = \begin{bmatrix}
+						w_0 \\ \vdots \\ w_d
+						\end{bmatrix}
 						\end{align*}\]
+						<br>
+						<ul>
+							<li>What does $x_iw$ look like over all $i$?</li>
+							<li>Easy: This is just column vector $Xw$, a vector where the $i^{th}$ element is $x_iw$</li>
+						</ul>
 					</section>
+
 					<section>
-						<ul>
-							<li>Take away the inner products and replace with matrices</li>
-						</ul>
+						<h2>Right half part 3</h2>
 						\[\begin{align*}
-							\langle x_k, Y\rangle &= \langle x_k, \sum_{j=0}^d x_{ij}w_j\rangle = \langle x_k, XW \rangle \\
-							x_k^TY &= x_k^T XW
+						X &= \begin{bmatrix}
+						1 & x_{11} & x_{12} & ... & x_{1d} \\
+						\vdots & \vdots & \vdots & \ddots & \vdots \\
+						1 & x_{n1} & x_{n2} & ... & x_{nd} \\
+						\end{bmatrix}, Xw = \begin{bmatrix}
+						x_1w \\ \vdots \\ x_nw
+						\end{bmatrix}
 						\end{align*}\]
 						<ul>
-							<li>Notice that $x_k$ is just the $k^{th}$ column of $X$, since we took our derivative with respect to $w_k$, which multiplies by a column of $X$</li>
+							<li>What is $i$ doing on $x_i$?</li>
+							<li>Going DOWN the $i^{th}$ training example</li>
+							<li>What is $i$ doing on $x_{ik}$? Going DOWN the training examples $x_k$ for the $k^{th}$ feature</li>
+							<li>Another inner product: just $\langle x_k, Xw\rangle = x_k^TXw$</li>
 						</ul>
-						\[\begin{align*}
-							X^TY &= X^TXW
-						\end{align*}\]
 					</section>
+
+					<section>
+						<h2>Putting it together</h2>
+						\[\begin{align*}
+							x_k^TY &= x_k^TXw
+						\end{align*}\]
+						<ul>
+							<li>just stack the $x_k$s into another matrix</li>
+							<li>Remember: $k$ goes over columns (features) of $X$</li>
+							\[\begin{align*}
+								X_{\textrm{stacked}} &= \begin{bmatrix}
+									\vdash x_0\dashv \\ \vdots \\ \vdash x_d \dashv
+								\end{bmatrix} = \begin{bmatrix}
+								1 & ... & 1 \\ \vdots & \ddots & \vdots \\ x_{1d} & ... & x_{nd}
+								\end{bmatrix}
+								\end{align*}\]
+							<li>But... $X_{\textrm{stacked}}$ is just $X^T$</li>
+						</ul>
+
+					</section>
+
 					<section>
 						<h2>Solution</h2>
 						\[\begin{align*}
-							\hat{W} &= (X^TX)^{-1}X^TY
+							X^TY &= X^TXw \\
+							\hat{w} &= (X^TX)^{-1}X^TY
 						\end{align*}\]
 						<ul>
 							<li>Now let's do it again but with matrices...</li>
@@ -270,13 +382,13 @@
 
 					<section>
 						\[\begin{align*}
-							SSR &= ||\epsilon||_2^2 = \langle \epsilon, \epsilon \rangle = \epsilon^T\epsilon \\
-								&= (Y - XW)^T (Y-XW)
+							LS &= ||\epsilon||_2^2 = \langle \epsilon, \epsilon \rangle = \epsilon^T\epsilon \\
+								&= (Y - Xw)^T (Y-Xw)
 						\end{align*}\]
 						Remember to distribute the transpose linearly and reverse your terms as you transpose...
 						\[\begin{align*}
-								&= \left(Y^T - W^TX^T\right)(Y - XW) \\
-								&= Y^TY - W^TX^TY - Y^TXW + W^TX^TXW
+								&= \left(Y^T - w^TX^T\right)(Y - Xw) \\
+								&= Y^TY - w^TX^TY - Y^TXw + w^TX^TXw
 						\end{align*}\]
 					</section>
 
@@ -285,32 +397,32 @@
 						<ul>
 							<li>Remember this is the SUM of SQUARED RESIDUALS/ERROR</li>
 							<li>SUM means it is scalar!</li>
-							<li>Then these things summing to equal SSR are scalar. so $Y^TY, -W^TX^TY, - Y^TXW,W^TX^TXW$ are ALL also scalars</li>
+							<li>Then these things summing to equal LS are scalar. so $Y^TY, -w^TX^TY, - Y^TXw,w^TX^TXw$ are ALL also scalars</li>
 							<li>Means then are all $\in \mathbb{R}$</li>
 							<li>If $x \in \mathbb{R}$, $x=x^T$!</li>
-							<li>So... $-W^TX^TY = (-W^TX^TY)^T = Y^TXW$</li>
+							<li>So... $-w^TX^TY = (-w^TX^TY)^T = Y^TXw$</li>
 						</ul>
 					</section>
 
 					<section>
 						\[\begin{align*}
-							SSR &= Y^TY - W^TX^TY - Y^TXW + W^TX^TXW  \\
-							&= Y^TY - 2Y^TXW + W^TX^TXW \\
-							\frac{\delta SSR}{\delta W} &= -2Y^TX + 2X^TXW = 0 \\
-							Y^TX &= X^TXW
+							LS &= Y^TY - w^TX^TY - Y^TXw + w^TX^TXw  \\
+							&= Y^TY - 2Y^TXw + w^TX^TXw \\
+							\frac{\delta LS}{\delta w} &= -2Y^TX + 2X^TXw = 0 \\
+							Y^TX &= X^TXw
 						\end{align*}\]
 						<ul>
-							<li>note: $\frac{\delta [XW]}{\delta W} = X$</li>
-							<li>$\frac{\delta [W^TX^TXW]}{\delta W} = 2X^TXW$</li>
+							<li>note: $\frac{\delta [Xw]}{\delta w} = X$</li>
+							<li>$\frac{\delta [w^TX^TXw]}{\delta w} = 2X^TXw$</li>
 						</ul>
 					</section>
 
 
 					<section>
 						\[\begin{align*}
-							Y^TX &= X^TXW \\
-							X^TY &= X^TXW \\
-							\hat{W} &= (X^TX)^{-1}X^TY
+							Y^TX &= X^TXw \\
+							X^TY &= X^TXw \\
+							\hat{w} &= (X^TX)^{-1}X^TY
 						\end{align*}\]
 						<ul>
 							<li>Transpose of a dot product is the same dot product</li>
@@ -321,8 +433,8 @@
 					<h2>Prediction</h2>
 					<ul>
 						<li>Given: $X_{new} \in \mathbb{R}^{d+1}$, a new example</li>
-						<li>Trained $\hat{W}$ using the closed form solution we just derived</li>
-						<li>$\hat{Y} = X_{new}\hat{W}$</li>
+						<li>Trained $\hat{w}$ using the closed form solution we just derived</li>
+						<li>$\hat{Y} = X_{new}\hat{w}$</li>
 					</ul>
 				</section>
 				<section>
@@ -380,11 +492,10 @@
 						<script type="text/template">
 							## Fitting Using Closed-Form Solution
 							```
-							What = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)  # W=(X^TX)^-1X^TY
-							print("Actual Intercept: " + str(W[0]) +
-								" Predicted Intercept: " + str(What[0]))
-							print("Actual Slope: " + str(W[1]) +
-								" Predicted Slope: " + str(What[1]))
+							# least squares solution
+							What = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)
+							print("Actual Intercept: " + str(W[0]) + " Predicted Intercept: " + str(What[0]))
+							print("Actual Slope: " + str(W[1]) + " Predicted Slope: " + str(What[1]))
 							```
 						</script>
 					</section>
@@ -437,19 +548,14 @@
 					</section>
 					<section data-markdown>
 						<script type="text/template">
-							## SK-Learn TODO Alex this is messed up
+							## SK-Learn
 							```
-							from sklearn import linear_model   # load the package for sk-learn
-
-							reg = linear_model.LinearRegression()  # generate an instance of the LR model
-							# slightly non-intuitive step
-							# SK Learn expects your data formatted as an array of data points, and
-							# each data point an array of features
-							X = X[:,1]  # no longer need to specify our constant term as SK takes care of that
-							X = X[:, np.newaxis]
-							X.shape  # returns (100, 1, 2)
-							# or a 100-dimensional array of 1x2 dimensional arrays
-							# not a 100-dimensional array of 1d arrays (yes, there is a difference)
+							# generate a random sample for trying sklearn
+							import scipy, numpy as np
+							n_size = 100
+							x = np.array(3 * np.random.rand(n_size)) # between 0 and 3
+							e = 2 * np.random.randn(x.size) # noise
+							y = np.array(10 * (x) + e) # some 'real' values (we let 'y' be observed values)
 							```
 						</script>
 					</section>
@@ -458,36 +564,59 @@
 						<script type="text/template">
 							## Fitting
 							```
-							reg.fit(X, Y)
+							from sklearn import linear_model
+							import matplotlib.pyplot as plt
+							# Using scikit learn
+							reg = linear_model.LinearRegression()
 
-							print("Actual: " + str(W))
-							print("Fitted: " + str(reg.coef_)
-							fig = plt.figure()
-							ax = fig.add_subplot(1,1,1)
-							ax.scatter(X[:,0,1], Y)
-							ax.set_xlabel('x')
-							ax.set_ylabel('y')
-							ax.set_title('Simulated Data')
+							# Convert array of scaler values 'x', into array of 1-feature array,
+							# the reason why we make conversion is because scikit-learn treats X, the train set, as set of multiple features (array)
+							X = x[:, np.newaxis]
+							reg.fit(X, y)
 
-							ax.plot(X[:,0,1], X[:,0,:].dot(W), color='r', linewidth=3, linestyle='--')
-							ax.plot(X[:,0,1], X[:,0,:].dot(reg.coef_), color='g', linewidth=3, linestyle='--')
-							ax.set_xlim([0, 100])
-							ax.set_ylim([0,150])
-							ax.legend(['expected', 'predicted', 'data'], loc='lower right')
+							# The coefficients
+							print('Coefficient:', reg.coef_)
 
-							fig.show()
+							# The mean squared error
+							print("Mean squared error: %.2f" % np.mean((reg.predict(X) - y) ** 2))
+
+							# Explained variance score: 1 is perfect prediction
+							print('Variance score: %.2f' % reg.score(X, y))
 							```
 						</script>
 					</section>
 
 					<section data-markdown>
 						<script type="text/template">
+							## Plotting
+
+							```
+							# We can make predictions with the linear regression model.
+							import matplotlib.pyplot as plt
+							observed_X = np.linspace(0, 3, 30, endpoint=True)
+							observed_X = observed_X[:, np.newaxis]
+
+							predicted_Y = reg.predict(observed_X)
+
+							plt.plot(x, y,'bo');
+							plt.plot(observed_X, predicted_Y,'r--');
+							plt.show()
+							```
+						</script>
+					</section>
+
+
+					<section data-markdown>
+						<script type="text/template">
 							## Prediction
 
 							```
-							TODO Alex add here
+							# We can make single predictions with the linear regression model.
+							value_to_predict = 1.5
+							predicted_value = reg.predict(value_to_predict)
+							print(predicted_value)
 							```
-</script>
+						</script>
 					</section>
 				</section>
 			</div>
