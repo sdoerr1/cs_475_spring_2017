@@ -195,15 +195,18 @@
 					<section>
 						Note: $y_i \in \mathbb{R}$, $x_i \in \mathbb{R}^{d + 1}$, $w \in \mathbb{R}^{d+1}$
 						\[\begin{align*}
-							SSR  = \sum_{i=1}^n \epsilon_i^2 &= \sum_{i=1}^n (y_i - x_iw)^2 \\
+							LS  = \sum_{i=1}^n \epsilon_i^2 &= \sum_{i=1}^n (y_i - x_iw)^2 \\
 							 &= \sum_{i=1}^n \left(y_i - \sum_{j=0}^d x_{ij}w_j\right)^2 \\
 						\end{align*}\]
+						<ul>
+							<li>Minimize MV function: $\nabla_w LS = \begin{pmatrix} \frac{\delta LS}{\delta w_0} & ... & \frac{\delta LS}{\delta w_d} \end{pmatrix}=0$</li>
+						</ul>
 					</section>
 
 					<section>
 						Take a derivative wrt each element of our coefficients $w_k$
 						\[\begin{align*}
-						\frac{\delta SSR}{\delta w_k}  &= \frac{\delta \sum_{i=1}^n \left(y_i - \sum_{j=0}^d x_{ij}w_j\right)^2}{\delta w_k} \\
+						\frac{\delta LS}{\delta w_k}  &= \frac{\delta \sum_{i=1}^n \left(y_i - \sum_{j=0}^d x_{ij}w_j\right)^2}{\delta w_k} \\
 						&= \sum_{i=1}^n -2x_{ik}\left(y_i - \sum_{j=0}^d x_{ij}w_j\right) \\
 						&= \sum_{i=1}^n \left(-2x_{ik}y_i + 2x_{ik}\sum_{j=0}^d x_{ij}w_j\right) \\
 						&= \sum_{i=1}^n -2x_{ik}y_i + \sum_{i=1}^n \left(2x_{ik}\sum_{j=0}^d x_{ij}w_j\right)
