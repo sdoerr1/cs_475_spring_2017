@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>reveal.js – The HTML Presentation Framework</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="../reveal.js/lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Introduction to Regularization</h1>
+					<h3>CS 600.475</h3>
+					<p>
+						<small>Created by <a href="http://ericwb.me">Eric Bridgeford</a> / <a href="http://github.com/ebridge2">@ebridge2</a></small>
+					</p>
+				</section>
+
+				<section>
+					<section>
+						<h1>What is a Norm?</h1>
+					</section>
+					<section>
+						<h2>Intuition</h2>
+						<ul>
+							<li>Assign a strictly positive length or size to a vector in a vector space</li>
+							<li>absolute measurement of position of a point in space</li>
+							<li>ex. absolute value is a norm</li>
+						</ul>
+					</section>
+					<section>
+						<h3>What do we mean by a norm?</h3>
+						norm $p: \mathbb{R}^n \rightarrow \mathbb{R}$
+						given: $x, y \in \mathbb{R}^n, a \in \mathbb{R}$
+						<ul>
+							<li>Scalable \[p(\alpha x) = |\alpha| p(x)\]</li>
+							<li>Triangle Inequality \[p(x + y) \leq p(x) + p(y)\]</li>
+							<li>Norm of Zero implies the vector is zero\[p(x) = 0 \rightarrow x = 0_n\]</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>$L1$ Norm</h2>
+						<ul>
+							<li>sum of the absolute value of a point's dimensions</li>
+							<li>Absolute value: simplest case of $L-1$ norm</li>
+							<ul>
+								<li>$x \in \mathbb{R}, p(x) = |x|$</li>
+							</ul>
+							<li>Formal definition: $\left|\left|x\right|\right|_1 = \sum_{i=1}^n |x_i|$</li>
+							<li>Note that $x \in \mathbb{R}^n$, so $i$ is just iterating over the dimensions of $x$</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Unit Ball</h2>
+						<ul>
+							<li>visualizing norms in $2D$ can give us insight into what they do</li>
+							<li>Unit ball: set of points that would receive a "norm" of 1</li>
+							<li>Note that our definition of a "norm" can vary, so every norm has its own unique unit ball</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Unit Ball of the $L1$ norm</h2>
+						<img src="../img/L1norm.png", width="300"/>
+						<ul>
+							<li>here, $x \in \mathbb{R}^2$</li>
+							<li>$x_1$ is the vertical axis, $x_2$ is the horizontal axis, $x = \begin{bmatrix}x_1 \\ x_2\end{bmatrix}$</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Examples</h2>
+						<ul>
+							<li>$x \in \mathbb{R}^2, x = \begin{bmatrix}3 \\ -4\end{bmatrix}, ||x||_1 = 7$</li>
+							<br>
+							<li>$x \in \mathbb{R}^3, x = \begin{bmatrix}5 \\ 2 \\ -4\end{bmatrix}, ||x||_1 = 11$</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>$L2$ Norm</h2>
+						<ul>
+							<li>root sum of the squares value of a point's dimensions</li>
+							<li>euclidian distance: simple intuition of the $L2$ norm</li>
+							<li>Formal definition: $\left|\left|x\right|\right|_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$</li>
+							<li>Why the absolute value for squaring? $L2$ norms are also defined in complex space</li>
+							<li>Need the absolute value to account for complex modulus</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Unit Ball of the $L2$ norm</h2>
+						<img src="../img/L2norm.png", width="300"/>
+						<ul>
+							<li>here, $x \in \mathbb{R}^2$</li>
+							<li>$x_1$ is the vertical axis, $x_2$ is the horizontal axis, $x = \begin{bmatrix}x_1 \\ x_2\end{bmatrix}$</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Special case of the $2$ norm</h2>
+						<ul>
+							<li>Remember from lin alg: $\langle x, x\rangle = x^Tx = \sum_{i=1}^n x_i^2$</li>
+							<li>if $x \in \mathbb{R}^n$, the L2 norm is given by $||x||_2 = \sqrt{\sum_{i=1}^n |x_i|^2}$</li>
+							<li>since $|x_i|^2 = x_i^2$ in real space, then we can "cheat":</li>
+							<ul>
+								<li>$||x||_2 =\sqrt{\langle x, x\rangle}$ </li>
+							</ul>
+							<li>Why? Most languages optimize such that matrix operations are really really fast!</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Examples</h2>
+						<ul>
+							<li>$x \in \mathbb{R}^2, x = \begin{bmatrix}3 \\ -4\end{bmatrix}, ||x||_2 = \sqrt{3^2 + 4^2} = 5$</li>
+							<br>
+							<li>$x \in \mathbb{R}^3, x = \begin{bmatrix}5 \\ 2 \\ -4\end{bmatrix}, ||x||_2 = \sqrt{5^2 + 2^2 + 4^2} = \sqrt{45}$</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>$p-$ Norm</h2>
+						<ul>
+							<li>Generalizes us to more complex normalizations</li>
+							<li>if $x \in \mathbb{R}^n$, $||x||_p = \left(\sum_{i=1}^n |x_i|^p\right)^\frac{1}{p}$</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Unit Balls</h2>
+						<img src="../img/norms.png">
+					</section>
+				</section>
+
+				<section>
+					<h2>Coding with Vectors</h2>
+					<ul>
+						<li>Best part about python: open source packages</li>
+						<li>Key packages: Numpy, Scipy, Sklearn</li>
+					</ul>
+				</section>
+
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							## Let functions do the work
+							```
+							import numpy as np
+
+							# function for user-specified p-norm, default to the 2 norm
+							def pnorm(x, p=2):
+								return np.sum(np.power(x, p))
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Check it!
+							```
+							n = 4
+							# define a 1d numpy array x
+							x = 2*np.ones((n,))
+							pnorm(x) == 16  # returns true
+							pnorm(x, p=1) == 8  # returns true
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Euclidian Special case
+							```
+							def eucl_norm(x):
+								return np.sqrt(x.T.dot(x))
+							```
+							+ np.dot() is one of the fastest operations you will use on large amounts of data
+							+ when you see a linear algebra "cheat", take it! we want you guys to be creative
+
+							```
+							# just to check ourselves
+							eucl_norm(x) == pnorm(x, p=2)  # returns true
+							```
+						</script>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Bias/Variance Tradeoff</h2>
+						<ul>
+							<li>every machine learning algorithm is going to either be too general, or not general enough</li>
+							<li>We have a fine line deciding between overfitting and underfitting the data</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Hypothesis Class</h2>
+						<ul>
+							<li>Every machine learning algorithm is really just a hypothesis class restriction</li>
+							<li>different "algorithms" = different way of interacting with the data</li>
+							<li>the selection of models/parameters defines your hypothesis class</li>
+							<li>Ie, hypothesis class of all linear functions with real coefficients</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Bias</h2>
+						<ul>
+							<li>Underfitting</li>
+							<li>simple hypothesis class</li>
+							<li>might only look at a small number of features</li>
+							<li>Might only look at a subset of the coefficients a model could take</li>
+							<li>Extreme: model outputs same value on every input</li>
+						</ul>
+					</section>
+					<section>
+						<h2>High Bias</h2>
+						<img src="../img/bias.png">
+						<br>
+						<ul>
+							<li>note that noise is reduced</li>
+							<li>We might get a "close" prediction, but miss out on the actual dynamics of the system because of our simplicity</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Variance</h2>
+						<ul>
+							<li>Overfitting</li>
+							<li>Radical shifts to small changes in the data</li>
+							<li>Including or excluding as few as one or two points completely changes our parameters</li>
+							<li>LOW generalizability</li>
+						</ul>
+					</section>
+					<section>
+						<h2>High Variance</h2>
+						<img src="../img/variance.png">
+						<br>
+						<ul>
+							<li>note that we fit every data point perfectly</li>
+							<li>If we were to test a new point, we would have no clue what to do with it</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Tradeoff</h2>
+						<ul>
+							<li>Bias can be good: distribute noise over the dataset</li>
+							<ul>
+								<li>If we have a model with bias, it can ignore those one or two outliers better</li>
+							</ul>
+							<li>Variance can be good: many real world systems are complex</li>
+							<ul>
+								<li>Sometimes it takes a high dimensional answer to analyze even the simplest of problems</li>
+							</ul>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Regularization</h2>
+						<ul>
+							<li>One solution to the bias/variance tradeoff</li>
+							<li>Given a model, regularization lets us determine the simplicity/complexity of the coefficients we want to keep</li>
+							<li>"Penalize" our data for overfitting in our minimization problem</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Regularization</h2>
+						<ul>
+							<li>Given: data $X=\left\{x_i\right\}_{i=1}^N, Y=\left\{y_i\right\}_{i=1}^N$, $x_i \in \mathbb{R}^d$</li>
+							<li>Loss function: $L(\theta | X, Y) : \theta_i \in \theta$ is a single parameter</li>
+							<li>Original problem: $\hat{\theta} = \textrm{argmin}_{\theta} L(\theta|X, Y)$</li>
+							<li>Regularized Problem: $\hat{\theta} = \textrm{argmin}_{\theta}\left[ L(\theta|X, Y) + \lambda f(\theta)\right]$</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Penalization</h2>
+						$\hat{\theta} = \textrm{argmin}_{\theta}\left[ L(\theta|X, Y) + \lambda f(\theta)\right]$
+						<ul>
+							<li>$f(\theta)$: function to penalize our parameters $\theta_i \in \theta$</li>
+							<li>example: we want coefficients to be generally small, so make $f(\theta)$ return a big value when $\theta_i$s are large</li>
+							<li>$\lambda$: bigger lambda gives us more regularization</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>L1 "Lasso" Regularization</h2>
+						$\hat{\theta} = \textrm{argmin}_{\theta}\left[ L(\theta|X, Y) + \lambda ||\theta||_1\right]$
+						<ul>
+							<li>Uses the L1 norm to regularize</li>
+							<li>one of the best norms: parameter selection</li>
+							<li>as long as our loss is convex, likely to hit our parameter set at an "edge"</li>
+							<li>downside: doesn't add extra penalty when values are super large</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>L2 "Ridge" Regularization</h2>
+						$\hat{\theta} = \textrm{argmin}_{\theta}\left[ L(\theta|X, Y) + \frac{\lambda}{2} ||\theta||_2^2\right]$
+						<ul>
+							<li>Uses the L2 norm to regularize</li>
+							<li>Also, a good norm</li>
+							<li>Penalizes larger values much more than it penalizes smaller values: squared</li>
+							<li>susceptible to bias: keeps a lot of low weight parameters</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Comparing Regularization Methods</h2>
+						<img src="../img/lasso_v_ridge.png", width="600">
+					</section>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="../reveal.js/lib/js/head.min.js"></script>
+		<script src="../reveal.js/js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				math: {
+					// mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+					config: 'TeX-AMS_HTML-full'
+				},
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: '../reveal.js/plugin/math/math.js', async: true },
+					{ src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+					{ src: '../reveal.js/plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>

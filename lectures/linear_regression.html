@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JHU 600.475 - Linear Regression</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="../reveal.js/lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Linear Regression</h1>
+					<h3>CS 600.475</h3>
+					<p>
+						<small>Created by <a href="http://ericwb.me">Eric Bridgeford</a> / <a href="http://github.com/ebridge2">@ebridge2</a></small>
+					</p>
+				</section>
+
+				<section>
+					<section>
+						<h1>What is a Linear Regression task?</h1>
+					</section>
+					<section>
+						<h2>Simple Example</h2>
+						<img src="../img/linear_task.png">
+						<ul>
+							<li>Here, $x \in \mathbb{R}^1$, $y \in \mathbb{R}^1$</li>
+							<li>It looks like there is a general upwards "trend", but how do we find the best"trend"?</li>
+							<li>What will our solution look like?</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Equation of a Line</h2>
+						<ul>
+							<li>Your first thought might be to map that with something like, $y=mx+b$</li>
+							<li>This works great for $1D$ examples, but our data is much more complex</li>
+							<li>Redefine the "line" with linear algebra, and let</li>
+							<li>$y = mx + b = \begin{bmatrix}1 & x\end{bmatrix}\begin{bmatrix} b \\ m \end{bmatrix}$</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Some Slight Notational Adjustments</h2>
+						<ul>
+							<li>Let $x \in \mathbb{R}^{d+1}$: add $x_0 = 1$</li>
+							<ul>
+								<li>this is a NECESSARY switch (more on why later)</li>
+								<li>$X = \begin{bmatrix} 1 & x_1 & ... & x_n\end{bmatrix}$</li>
+							</ul>
+							<li>Let $W = \begin{bmatrix} b \\ m \end{bmatrix} = \begin{bmatrix} w_0 \\ w_1 \end{bmatrix}$</li>
+							<li>Let $Y = y$; capital since it is "technically" a matrix</li>
+							<li>$Y = XW$: the equation of a basic line</li>
+							<li>$Y \in \mathbb{R}^{n \times 1}, X \in \mathbb{R}^{n \times d + 1}, W \in \mathbb{R}^{d+1 \times 1}$</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Intuition</h2>
+						<ul>
+							<li>given a real valued input with some number of features, provide the "most-likely" real valued output</li>
+							<li>Given: $\left\{(x_i, y_i)\right\}_{i=1}^n$, $x_i \in \mathbb{R}^d, y_i \in \mathbb{R}^d$ </li>
+							<li>Model: $Y = XW + ?$</li>
+							<li>Can we find the weights for our model that minimize some sort of "loss" incurred on bad predictions?</li>
+						</ul>
+					</section>
+					<section>
+						<h2>Simple Example</h2>
+						<img src="../img/linear_task.png", width="400">
+						<ul>
+							<li>Notice we could not fit this data with $Y=XW$</li>
+							<li>Why? Look at all the noise!</li>
+							<li>Better model: $Y = XW + \epsilon$</li>
+							<li>$\epsilon \in \mathbb{R}^n$: all $n$ data points we are given have some error element</li>
+						</ul>
+					</section>
+					<section>
+						<h2>The Model</h2>
+
+						$Y = XW + \epsilon$
+
+						\[\begin{align*}
+						\begin{bmatrix}
+							y_1 \\ y_2 \\ \vdots \\ y_n
+						\end{bmatrix}
+						&=
+						\begin{bmatrix}
+							1 & x_{11} & x_{12} & ... & x_{1d} \\
+							1 & x_{21} & x_{22} & ... & x_{2d} \\
+							\vdots & \vdots & \vdots & \ddots & \vdots \\
+							1 & x_{n1} & x_{n2} & ... & x_{nd} \\
+						\end{bmatrix}
+						\begin{bmatrix}
+							w_0 \\ w_1 \\ w_2 \\ \vdots \\ w_d
+						\end{bmatrix}
+						+
+						\begin{bmatrix}
+							\epsilon_1 \\ \epsilon_2 \\ \vdots \\ \epsilon_n
+						\end{bmatrix}
+
+						\end{align*}\]
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h1>OLS Loss Function</h1>
+					</section>
+					<section>
+						<h2>OLS: Ordinary Least Squares</h2>
+						<ul>
+							<li>Goes by many names: Ordinary Least Squares, Sum of Squared Residuals, Sum of Squared Error, etc.</li>
+							<li>You pick; I personally like Sum of Squared Residuals (SSR)</li>
+							<li>Disclaimer: the first time I saw this, I just zoned out because it didn't make any sense :(</li>
+							<li>Try and bear with me, and let me know if something is unclear</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>What is a Residual?</h2>
+						<ul>
+							<li>A "residual" is just our error $\epsilon_i$ for a particular data point</li>
+							<li>How much our prediction is "off" by</li>
+							<li>Red is our data points, blue is our "estimate", green is our residual/error</li>
+						</ul>
+						<img src="../img/residual.png", width="300">
+					</section>
+
+					<section>
+						<h2>Defining our Loss</h2>
+						<ul>
+							<li>If we have $Y = XW + \epsilon$, then $\epsilon = Y - XW$</li>
+							<li>Loss function: $L(W | X, Y) = \textrm{argmin}_{W}f(\epsilon)$</li>
+							<li>What function $f(\epsilon)$ should we pick to minimize the error?</li>
+							<li>Remember our discussion on norms...</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Finally, a Loss function!</h2>
+						<ul>
+							<li>let $f(\epsilon) = ||\epsilon||_2^2 = ||Y - XW||_2^2$</li>
+							<li>Our model becomes: $L(W | X, Y) = \textrm{argmin}_{W}||Y - XW||_2^2$</li>
+							<li>Pick the weights $W$ that minimize our error, or the difference between our observations $Y$ and our predictions $\hat{Y} = XW$</li>
+							<li>How can we figure this out?</li>
+						</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>MV Calc to the rescue</h2>
+						<ul>
+							<li>Let's step back for a second and look at our model in terms of a matrix and iterative interpretation</li>
+							<li>Remember the $L2$ norm: $\left|\left|x\right|\right|_2 = \sqrt{\sum_{i=1}^n x_i^2}$</li>
+							<li>Here, we have $||\epsilon||_2^2 = \sum_{i=1}^n \epsilon_i^2$ (note the $\sqrt{\cdot}$ disappears!)</li>
+							<li>This represents a link between our matrix representation, and a more intuitive representation going element by element</li>
+						</ul>
+					</section>
+
+					<section>
+						Note: $y_i \in \mathbb{R}$, $x_i \in \mathbb{R}^{d + 1}$, $w \in \mathbb{R}^{d+1}$
+						\[\begin{align*}
+							SSR  = \sum_{i=1}^n \epsilon_i^2 &= \sum_{i=1}^n (y_i - x_iw)^2 \\
+							 &= \sum_{i=1}^n \left(y_i - \sum_{j=0}^d x_{ij}w_j\right)^2 \\
+						\end{align*}\]
+					</section>
+
+					<section>
+						Take a derivative wrt each element of our coefficients $w_k$
+						\[\begin{align*}
+						\frac{\delta SSR}{\delta w_k}  &= \frac{\delta \sum_{i=1}^n \left(y_i - \sum_{j=0}^d x_{ij}w_j\right)^2}{\delta w_k} \\
+						&= \sum_{i=1}^n -2x_{ik}\left(y_i - \sum_{j=0}^d x_{ij}w_j\right) \\
+						&= \sum_{i=1}^n \left(-2x_{ik}y_i + 2x_{ik}\sum_{j=0}^d x_{ij}w_j\right) \\
+						&= \sum_{i=1}^n -2x_{ik}y_i + \sum_{i=1}^n \left(2x_{ik}\sum_{j=0}^d x_{ij}w_j\right)
+						\end{align*}\]
+					</section>
+
+					<section>
+						Note: looking for a local optima, so set derivative equal to zero
+						\[\begin{align*}
+							0 &= \sum_{i=1}^n -2x_{ik}y_i + \sum_{i=1}^n \left(2x_{ik}\sum_{j=0}^d x_{ij}w_j\right) \\
+							\sum_{i=1}^n x_{ik}y_i &= \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right)
+						\end{align*}\]
+					</section>
+					<section>
+						<h2>Next step is tough</h2>
+						<ul>
+							<li>If you look closely though, the entire thing is wrought with our lin alg "cheats"</li>
+							<li>Remember: $\langle x, y\rangle = x^Ty = \sum_{i=1}^n x_i y_i$</li>
+							<li>Goal: Put it back into a matrix</li>
+						</ul>
+					</section>
+					<section>
+						<ul>
+							<li>Drop the sums over $i$ with inner products that "operate" over $i$</li>
+						</ul>
+						\[\begin{align*}
+							\sum_{i=1}^n x_{ik}y_i &= \sum_{i=1}^n \left(x_{ik}\sum_{j=0}^d x_{ij}w_j\right) \\
+							\langle x_k, Y\rangle &= \langle x_k, \sum_{j=0}^d x_{ij}w_j\rangle = \langle x_k, XW \rangle \\
+						\end{align*}\]
+					</section>
+					<section>
+						<ul>
+							<li>Take away the inner products and replace with matrices</li>
+						</ul>
+						\[\begin{align*}
+							\langle x_k, Y\rangle &= \langle x_k, \sum_{j=0}^d x_{ij}w_j\rangle = \langle x_k, XW \rangle \\
+							x_k^TY &= x_k^T XW
+						\end{align*}\]
+						<ul>
+							<li>Notice that $x_k$ is just the $k^{th}$ column of $X$, since we took our derivative with respect to $w_k$, which multiplies by a column of $X$</li>
+						</ul>
+						\[\begin{align*}
+							X^TY &= X^TXW
+						\end{align*}\]
+					</section>
+					<section>
+						<h2>Solution</h2>
+						\[\begin{align*}
+							\hat{W} &= (X^TX)^{-1}X^TY
+						\end{align*}\]
+						<ul>
+							<li>Now let's do it again but with matrices...</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<section>
+						<h2>Matrix Derivation</h2>
+						<ul>
+							<li>This one is a little less intuitive, but once you see it, is MUCH simpler</li>
+						</ul>
+					</section>
+
+
+					<section>
+						\[\begin{align*}
+							SSR &= ||\epsilon||_2^2 = \langle \epsilon, \epsilon \rangle = \epsilon^T\epsilon \\
+								&= (Y - XW)^T (Y-XW)
+						\end{align*}\]
+						Remember to distribute the transpose linearly and reverse your terms as you transpose...
+						\[\begin{align*}
+								&= \left(Y^T - W^TX^T\right)(Y - XW) \\
+								&= Y^TY - W^TX^TY - Y^TXW + W^TX^TXW
+						\end{align*}\]
+					</section>
+
+
+					<section>
+						<ul>
+							<li>Remember this is the SUM of SQUARED RESIDUALS/ERROR</li>
+							<li>SUM means it is scalar!</li>
+							<li>Then these things summing to equal SSR are scalar. so $Y^TY, -W^TX^TY, - Y^TXW,W^TX^TXW$ are ALL also scalars</li>
+							<li>Means then are all $\in \mathbb{R}$</li>
+							<li>If $x \in \mathbb{R}$, $x=x^T$!</li>
+							<li>So... $-W^TX^TY = (-W^TX^TY)^T = Y^TXW$</li>
+						</ul>
+					</section>
+
+					<section>
+						\[\begin{align*}
+							SSR &= Y^TY - W^TX^TY - Y^TXW + W^TX^TXW  \\
+							&= Y^TY - 2Y^TXW + W^TX^TXW \\
+							\frac{\delta SSR}{\delta W} &= -2Y^TX + 2X^TXW = 0 \\
+							Y^TX &= X^TXW
+						\end{align*}\]
+						<ul>
+							<li>note: $\frac{\delta [XW]}{\delta W} = X$</li>
+							<li>$\frac{\delta [W^TX^TXW]}{\delta W} = 2X^TXW$</li>
+						</ul>
+					</section>
+
+
+					<section>
+						\[\begin{align*}
+							Y^TX &= X^TXW \\
+							X^TY &= X^TXW \\
+							\hat{W} &= (X^TX)^{-1}X^TY
+						\end{align*}\]
+						<ul>
+							<li>Transpose of a dot product is the same dot product</li>
+						</ul>
+					</section>
+				</section>
+				<section>
+					<h2>Prediction</h2>
+					<ul>
+						<li>Given: $X_{new} \in \mathbb{R}^{d+1}$, a new example</li>
+						<li>Trained $\hat{W}$ using the closed form solution we just derived</li>
+						<li>$\hat{Y} = X_{new}\hat{W}$</li>
+					</ul>
+				</section>
+				<section>
+					<section>
+						<h1>Code Demo</h1>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## Producing X vector
+							```
+							%matplotlib inline  # allows matplotlib to plot in jupyter-notebook
+							import numpy as np
+							import matplotlib.pyplot as plt
+
+							n = 100  # the number of samples
+							d = 1  # the number of dimensions of our points
+							X = np.linspace(0, n-1, n).reshape(n, d)  # now, X is just a nx1 matrix
+							X.shape  # returns (100, 1)
+
+							X = np.hstack(((np.ones((n, 1)), X)))  # adds a column of 1s for constant term
+							X.shape  # returns (100, 2) because we have a column of 1s
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Producing and Plotting Simulated Responses
+							```
+							covar = 200*np.identity(d)  # simulated data with 200*I covariance
+							# simulate n samples of zero-mean, gaussian noise, just like the model
+							# specifies
+							E = np.random.multivariate_normal(mean=np.zeros((d,)), cov=covar, size=n)
+							W = np.array([50, .5]).reshape(d+1, 1)
+							Y = X.dot(W) + E  # observations with error
+
+							fig = plt.figure()
+							ax = fig.add_subplot(1,1,1)
+							ax.scatter(X[:,1], Y)  # plot non-constant X terms
+							ax.set_xlabel('x')
+							ax.set_ylabel('y')
+							ax.set_title('Simulated Data')
+							fig.tight_layout()  # makes sure we don't cutoff anything
+							fig.show()
+							```
+						</script>
+					</section>
+
+					<section>
+						<h2>Example Simulated Data Plot</h2>
+						<img src="../img/linear_task.png">
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Fitting Using Closed-Form Solution
+							```
+							What = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)  # W=(X^TX)^-1X^TY
+							print("Actual Intercept: " + str(W[0]) +
+								" Predicted Intercept: " + str(What[0]))
+							print("Actual Slope: " + str(W[1]) +
+								" Predicted Slope: " + str(What[1]))
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Plotting Predicted vs. Actual Solution
+							```
+							fig = plt.figure()
+							ax = fig.add_subplot(1,1,1)
+							ax.scatter(X[:,1], Y)
+							ax.set_xlabel('x')
+							ax.set_ylabel('y')
+							ax.set_title('Simulated Data')
+
+
+							ax.plot(X[:,1], X.dot(W), color='g', linewidth=3, linestyle='--')
+							ax.plot(X[:,1], X.dot(What), color='r', linewidth=3, linestyle='--')
+							ax.set_xlim([0, 100])
+							ax.set_ylim([0,150])
+							ax.legend(['expected', 'predicted', 'data'], loc='lower right')
+
+							fig.show()
+							```
+						</script>
+					</section>
+
+					<section>
+						<h2>Actual vs. Expected Solution</h2>
+						<img src="../img/exp_vs_actual.png"/>
+					</section>
+
+					<section>
+						<h2>SK-Learn</h2>
+						<ul>
+							<li>This model is simple: probably easiest to implement it ourselves</li>
+							<li>Many will not be</li>
+							<li>Get used to SK-learn while our models are simple</li>
+						</ul>
+					</section>
+
+					<section>
+						<h2>Input Data</h2>
+						<ul>
+							<li>SKLearn expects your inputs to be formatted properly; when using SKLearn, this is the hardest part</li>
+							<li>VERY easy to misuse pre-built, black-box software</li>
+							<li>For this reason, when you use black-box software, we EXPECT you to TEST and SHOW us that what you are doing is correct</li>
+							<li>It's easy to get a seemingly "correct" answer and still make mistakes</li>
+						</ul>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							## SK-Learn TODO Alex this is messed up
+							```
+							from sklearn import linear_model   # load the package for sk-learn
+
+							reg = linear_model.LinearRegression()  # generate an instance of the LR model
+							# slightly non-intuitive step
+							# SK Learn expects your data formatted as an array of data points, and
+							# each data point an array of features
+							X = X[:,1]  # no longer need to specify our constant term as SK takes care of that
+							X = X[:, np.newaxis]
+							X.shape  # returns (100, 1, 2)
+							# or a 100-dimensional array of 1x2 dimensional arrays
+							# not a 100-dimensional array of 1d arrays (yes, there is a difference)
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Fitting
+							```
+							reg.fit(X, Y)
+
+							print("Actual: " + str(W))
+							print("Fitted: " + str(reg.coef_)
+							fig = plt.figure()
+							ax = fig.add_subplot(1,1,1)
+							ax.scatter(X[:,0,1], Y)
+							ax.set_xlabel('x')
+							ax.set_ylabel('y')
+							ax.set_title('Simulated Data')
+
+							ax.plot(X[:,0,1], X[:,0,:].dot(W), color='r', linewidth=3, linestyle='--')
+							ax.plot(X[:,0,1], X[:,0,:].dot(reg.coef_), color='g', linewidth=3, linestyle='--')
+							ax.set_xlim([0, 100])
+							ax.set_ylim([0,150])
+							ax.legend(['expected', 'predicted', 'data'], loc='lower right')
+
+							fig.show()
+							```
+						</script>
+					</section>
+
+					<section data-markdown>
+						<script type="text/template">
+							## Prediction
+
+							```
+							TODO Alex add here
+							```
+</script>
+					</section>
+				</section>
+			</div>
+
+		</div>
+
+		<script src="../reveal.js/lib/js/head.min.js"></script>
+		<script src="../reveal.js/js/reveal.js"></script>
+
+		<script>
+
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				math: {
+					// mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
+					config: 'TeX-AMS_HTML-full'
+				},
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: '../reveal.js/plugin/math/math.js', async: true },
+					{ src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+					{ src: '../reveal.js/plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
