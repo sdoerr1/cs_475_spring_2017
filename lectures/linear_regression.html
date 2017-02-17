@@ -497,139 +497,15 @@
 						<h2>Example Simulated Data Plot</h2>
 						<img src="../img/linear_task.png">
 					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Fitting Using Closed-Form Solution
-							```
-							# least squares solution
-							What = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)
-							print("Actual Intercept: " + str(W[0]) + " Predicted Intercept: " + str(What[0]))
-							print("Actual Slope: " + str(W[1]) + " Predicted Slope: " + str(What[1]))
-							```
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Plotting Predicted vs. Actual Solution
-							```
-							fig = plt.figure()
-							ax = fig.add_subplot(1,1,1)
-							ax.scatter(X[:,1], Y)
-							ax.set_xlabel('x')
-							ax.set_ylabel('y')
-							ax.set_title('Simulated Data')
-
-
-							ax.plot(X[:,1], X.dot(W), color='g', linewidth=3, linestyle='--')
-							ax.plot(X[:,1], X.dot(What), color='r', linewidth=3, linestyle='--')
-							ax.set_xlim([0, 100])
-							ax.set_ylim([0,150])
-							ax.legend(['expected', 'predicted', 'data'], loc='lower right')
-
-							fig.show()
-							```
-						</script>
-					</section>
-
-					<section>
-						<h2>Actual vs. Expected Solution</h2>
-						<img src="../img/exp_vs_actual.png"/>
-					</section>
-
-					<section>
-						<h2>SK-Learn</h2>
-						<ul>
-							<li>This model is simple: probably easiest to implement it ourselves</li>
-							<li>Many will not be</li>
-							<li>Get used to SK-learn while our models are simple</li>
-						</ul>
-					</section>
-
-					<section>
-						<h2>Input Data</h2>
-						<ul>
-							<li>SKLearn expects your inputs to be formatted properly; when using SKLearn, this is the hardest part</li>
-							<li>VERY easy to misuse pre-built, black-box software</li>
-							<li>For this reason, when you use black-box software, we EXPECT you to TEST and SHOW us that what you are doing is correct</li>
-							<li>It's easy to get a seemingly "correct" answer and still make mistakes</li>
-						</ul>
-					</section>
-					<section data-markdown>
-						<script type="text/template">
-							## SK-Learn
-							```
-							# generate a random sample for trying sklearn
-							import scipy, numpy as np
-							n_size = 100
-							x = np.array(3 * np.random.rand(n_size)) # between 0 and 3
-							e = 2 * np.random.randn(x.size) # noise
-							y = np.array(10 * (x) + e) # some 'real' values (we let 'y' be observed values)
-							```
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Fitting
-							```
-							from sklearn import linear_model
-							import matplotlib.pyplot as plt
-							# Using scikit learn
-							reg = linear_model.LinearRegression()
-
-							# Convert array of scaler values 'x', into array of 1-feature array,
-							# the reason why we make conversion is because scikit-learn treats X, the train set, as set of multiple features (array)
-							X = x[:, np.newaxis]
-							reg.fit(X, y)
-
-							# The coefficients
-							print('Coefficient:', reg.coef_)
-
-							# The mean squared error
-							print("Mean squared error: %.2f" % np.mean((reg.predict(X) - y) ** 2))
-
-							# Explained variance score: 1 is perfect prediction
-							print('Variance score: %.2f' % reg.score(X, y))
-							```
-						</script>
-					</section>
-
-					<section data-markdown>
-						<script type="text/template">
-							## Plotting
-
-							```
-							# We can make predictions with the linear regression model.
-							import matplotlib.pyplot as plt
-							observed_X = np.linspace(0, 3, 30, endpoint=True)
-							observed_X = observed_X[:, np.newaxis]
-
-							predicted_Y = reg.predict(observed_X)
-
-							plt.plot(x, y,'bo');
-							plt.plot(observed_X, predicted_Y,'r--');
-							plt.show()
-							```
-						</script>
-					</section>
-
-
-					<section data-markdown>
-						<script type="text/template">
-							## Prediction
-
-							```
-							# We can make single predictions with the linear regression model.
-							value_to_predict = 1.5
-							predicted_value = reg.predict(value_to_predict)
-							print(predicted_value)
-							```
-						</script>
-					</section>
-				</section>
-			</div>
+                    <section>
+                        <h2>HW1 Jupyter Notebook Setup</h2>
+                        <ul>
+                            <li><a href="../PS1-asymloss-notebook.ipynb">hw1-setup-tutorial</a></li>
+                        </ul>
+                        
+                    </section>
+                </section>
+            </div>
 
 		</div>
 
