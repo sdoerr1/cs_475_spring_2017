@@ -164,7 +164,8 @@
 						<h2>Defining our Loss</h2>
 						<ul>
 							<li>If we have $Y = Xw + \epsilon$, then $\epsilon = Y - Xw$</li>
-							<li>Loss function: $L(w | X, Y) = \textrm{argmin}_{w}f(\epsilon)$</li>
+							<li>Loss function: $L(w | X, Y) = \textrm{min}_{w}f(\epsilon | X, Y)$</li>
+							<li>$\hat{w} = \textrm{min}_{w}f(\epsilon | X, Y)$</li>
 							<li>What function $f(\epsilon)$ should we pick to minimize the error?</li>
 							<li>Remember our discussion on norms...</li>
 						</ul>
